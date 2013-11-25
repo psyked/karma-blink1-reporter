@@ -18,7 +18,7 @@
   ],
   "author": "Norbert Schneider <norbert.schneider@gmx.de>",
   "peerDependencies": {
-    "karma": "~0.9"
+    "karma": ">=0.9"
   },
   "license": "MIT"
 }
