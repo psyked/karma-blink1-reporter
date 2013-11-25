@@ -1,24 +1,24 @@
 {
-  "name": "karma-blink1-reporter",
-  "version": "0.1.1",
-  "description": "A Karma plugin that reports test results with a blink(1) device.",
-  "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/bertschneider/karma-blink1-reporter.git"
-  },
-  "keywords": [
-    "karma-plugin",
-    "reporter",
-    "blink",
-    "blink(1)"
-  ],
-  "author": "Norbert Schneider <norbert.schneider@gmx.de>",
-  "peerDependencies": {
-    "karma": "~0.10"
-  },
-  "license": "MIT"
+    "name": "karma-blink1-reporter",
+    "version": "0.1.2",
+    "description": "A Karma plugin that reports test results with a blink(1) device.",
+    "main": "index.js",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://github.com/psyked/karma-blink1-reporter.git"
+    },
+    "keywords": [
+        "karma-plugin",
+        "reporter",
+        "blink",
+        "blink(1)"
+    ],
+    "author": "James Ford <psyked84@gmail.com>",
+    "peerDependencies": {
+        "karma": "~0.10"
+    },
+    "license": "MIT"
 }
