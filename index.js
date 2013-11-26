@@ -22,15 +22,21 @@ var Blink1Reporter = function (helper, logger, config) {
         }
     }
 
-    function changeColorTo(color, duration) {
+    function changeColorTo(color, duration, stop) {
+        var path = require('path')
         var exec = require('child_process').exec;
         var child;
 
         var rgb = hex2rgb(color);
 
-        child = exec("blink1-tool --rgb " + rgb.red + "," + rgb.green + "," + rgb.blue + "", function (error, stdout, stderr) {
-            log.info('stdout: ' + stdout);
-            log.warn('stderr: ' + stderr);
+        var blinkStr = (stop !== true) ? "" : " --blink 1";
+
+        var parentDir = path.resolve(__dirname, './lib');
+        child = exec("blink1-tool --rgb " + rgb.red + "," + rgb.green + "," + rgb.blue + " -m " + (duration * 1000) + "" + blinkStr, {cwd: parentDir}, function (error, stdout, stderr) {
+//            log.info('stdout: ' + stdout);
+//            if (stderr !== null) {
+//                log.warn('stderr: ' + stderr);
+//            }
             if (error !== null) {
                 log.info('exec error: ' + error);
             }
@@ -38,8 +44,8 @@ var Blink1Reporter = function (helper, logger, config) {
     }
 
     var DEFAULT_CONFIG = {
-        fault: 'FFFF00',
-        error: 'FFF000',
+        fault: 'FF6600',
+        error: 'FF0000',
         success: '00FF00',
         duration: 1.5
     };
@@ -47,29 +53,50 @@ var Blink1Reporter = function (helper, logger, config) {
     config = helper.merge(DEFAULT_CONFIG, config);
     var log = logger.create('reporter.blink1');
 
-    this.onRunStart = function () {
-        // request(config.baseUrl + 'enumerate', function (statusCode, result) {
-//             if (result.blink1Id) {
-//                 log.info('blink1 found (ID:' + result.blink1Id + ')');
-//             } else {
-//                 log.warn('No blink1 found');
-//             }
-//         }, function (err) {
-//             log.warn('Error looking up blink1\n' + err);
-//         });
-        changeColorTo(config.fault, config.duration);
+//    this.onRunStart = function () {
+//        changeColorTo(config.fault, config.duration);
+//    };
+
+    this.onSpecComplete = function(browser, result) {
+        log.info('result: ' + result.success);
+        log.info('browser: ' + browser);
+        if (result.skipped) {
+            changeColorTo(config.fault, config.duration);
+        } else if (result.success) {
+            changeColorTo(config.success, config.duration);
+        } else {
+            changeColorTo(config.error, config.duration);
+        }
+//
+//        if (reportSlow && result.time > reportSlow) {
+//            var specName = result.suite.join(' ') + ' ' + result.description;
+//            var time = helper.formatTimeInterval(result.time);
+//
+//            this.writeCommonMsg(util.format(this.SPEC_SLOW, browser, time, specName));
+//        }
     };
 
     this.onBrowserComplete = function (browser) {
         var results = browser.lastResult;
         if (results.disconnected || results.error) {
-            changeColorTo(config.fault, config.duration);
+            changeColorTo(config.fault, config.duration, true);
         } else if (results.failed) {
-            changeColorTo(config.error, config.duration);
+            changeColorTo(config.error, config.duration, true);
         } else {
-            changeColorTo(config.success, config.duration);
+            changeColorTo(config.success, config.duration, true);
         }
     };
+
+//    this.onBrowserComplete = function (browser) {
+//        var results = browser.lastResult;
+//        if (results.disconnected || results.error) {
+//            changeColorTo(config.fault, config.duration);
+//        } else if (results.failed) {
+//            changeColorTo(config.error, config.duration);
+//        } else {
+//            changeColorTo(config.success, config.duration);
+//        }
+//    };
 };
 
 Blink1Reporter.$inject = ['helper', 'logger', 'config.blink1'];
